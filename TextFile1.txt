@@ -1,0 +1,134 @@
+▼開発計画
+
+ステータスバーに表示している物を、logとして保存しておく。
+
+絵をつける。
+正解率をクリックすると再計算を行う
+-保存されていないファイルを終了間際に確認する
+
+削除した単語をごみ箱ファイルに保存する。
+単語の検索を出来るようにする(複数ファイルから)
+例文検索(動詞の活用、名詞・形容詞の変化も登録)
+参照単語登録
+
+コマンドラインからファイルを開く
+
+
+v2.0
+①単語・発音・意味 で一括りにする
+②品詞・活用
+③参照単語
+④例文
+
+▼変な所
+
+
+
+
+<<関数の表>>
+
+<準ハンドラ>
+//単語の登録に関する関数
+public void bEntry();
+public void bEntryN();
+public void bEntryV();
+public void bEntryAd();
+public void bEntryA();
+public void bInsert();//単語リストの途中に挿入する形で単語を登録
+public void bEdit();//また単語入力場所に単語を戻して編集出来る様にする
+public void bEditWord();
+public void bEditMean();
+public void bEditRef();
+public void bEditExmp();
+public void bDel();
+public void bUp();
+public void bDown();
+//単語の表示方法
+public void bDetail();
+public void bList();
+//文字入力
+public void bLetter();
+//ファイル入出力関数
+public void bNew();
+public void bSave();
+public void bRead();
+//情報の通知(ステイタスバー)
+public void vMessage();
+
+<諸々の関数>
+//
+
+
+■
+■ArrayList(可変長配列)
+■■■■■■■■■■■■■■■■■■■
+○関数
+Add([追加したい要素])
+ToArray(System.Type type)
+
+
+■
+■XMLファイルの入出力に関するまとめ
+■■■■■■■■■■■■■■■■■■■
+○XMLファイル内のノードタイプ
+(列挙体)System.Xml.XmlNodeType
+___________________________________________
+Document
+DocumentFragement
+-XmlDeclaration "<?xml version='1.0'?>"
+-DocumentType
+ -Notation
+ -Entity
+ 
+
+-Element & ElementEnd "<sample>"
+ +Element
+ -Text
+ -Comment "<!--sample-->"
+ -EntityReference "&sample;" & EndEntity(ResolveEntity()実行後)
+  -Text
+  +Element
+  -CDATA
+  -ProcessingInstruction
+  -Comment
+ -ProcessingInstruction <?pi test?>
+ 
+Attribute
+-Text
+-EntityReference
+
+SignificantWhitespace
+Whitespace
+None
+___________________________________________
+○XmlTextReaderの関数・プロパティ
+public void Skip();
+public void Read();//一つ次のノードへ
+public string ReadInnerXml();//Elementの最後に移動する。(Skip();と同じ内容を行う)
+
+string GetAttribute(string 属性値);//指定した属性が見つからなかった時にはnull値を返します。
+string GetAttribute(int 何番目の属性か);
+string GetAttribute(string Local名,string 名前空間URI);
+
+string Name{get;}
+string Prefix{get;}
+string LocalName{get;}
+
+System.Xml.XmlNodeType NodeType{get;}
+
+
+■
+■ frmWordEdit
+■■■■■■■■■■■■■■■■■■■
+
+テキストボックスに変更が加わった時に
+this.word2
+の内容も変更するように設定する。
+
+
+■
+■ editWordCtl
+■■■■■■■■■■■■■■■■■■■
+
+error:オブジェクト参照がオブジェクト インスタンスに設定されていません。
+

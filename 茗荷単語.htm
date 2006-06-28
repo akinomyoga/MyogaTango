@@ -1,0 +1,394 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns:c>
+<head>
+<title>茗荷単語</title>
+<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+<script type="text/javascript"><!--
+function showpage(a){
+	page1.style.display='none';
+	page2.style.display='none';
+	page3.style.display='none';
+	page4.style.display='none';
+	a.style.display='block';
+}
+-->
+</script>
+<style type="text/css">
+body,pre{font-family:MS Gothic;}
+c\:g{color:green;}
+c\:b{color:blue;}
+c\:gry{color:gray;}
+ol{margin-top:1;margin-bottom:1;}
+ul{margin-top:1;margin-bottom:1;margin-left:20;}
+
+.table1 th{background-color:gray;color:white;}
+.table1 td{background-color:#eee;}
+</style>
+</head>
+<body>
+<h1>茗荷単語の計画</h1>
+<input type="button" onclick="showpage(page1);" value="英単語"/>
+<input type="button" onclick="showpage(page2);" value="古文単語"/>
+<input type="button" onclick="showpage(page3);" value="中国語単語"/>
+<input type="button" onclick="showpage(page4);" value="Test Codes"/>
+<input type="button" onclick="showpage(page5);" value="その他"/>
+<hr/>
+<div id="page1" style="display:block;">
+<h2>英単語 ― English</h2>
+
+
+<h3><c:g>▼</c:g>機能</h3>
+
+<p><u>□英単語帳データの保存</u><br/>
+1.保存の為に、それぞれの子クラスをバイナリに変換したり戻したりする仕組みを作る。<br/>
+　子クラスをバイナリで表した後それらを、どのようにして繋げるかを定義して、まとめる仕組みを作る。
+</p>
+
+<p><u>□英単語帳部分(単語グループ)</u><br/>
+2.ある規則や分類に従って、英単語帳の一部の単語を括った物を用意する<br/>
+　明確に言えば、
+<ol>
+<li>親単語帳の中の複数の単語への参照を持ったオブジェクトを作成する。</li>
+<li>そのオブジェクトを呼び出す事によって、その括られた単語の一覧を得て、見比べる事が出来るようにする。</li>
+</ol></p>
+
+<p><u>□検索</u>
+<ul>
+<li>検索の方法について考える。</li>
+ <ul>
+ <li>単語に含まれる文字列</li>
+ <li>例文・解説に含まれる単語</li>
+ <li>正解率の低い物</li>
+ <li>品詞、属性、用法などから検索</li>
+ </ul>
+<li>検索の為に使う木の種類及び作成方法を考える。</li>
+ <ul>
+ <li>英単語データに、自分の木を作らせる仕組みを実装。</li>
+ <li>木の保存方法も確保する。</li>
+ </ul>
+<li>検索の為のフォーム</li>
+<li>登録していない単語を検索</li>
+ <ul><li>例文や熟語の中に含まれる単語で、登録してない物を検索して、登録する事が出来るようにする。</li></ul>
+</ul></p>
+
+<p><u>□出題(英単語の練習)</u>
+<ul>
+<li>練習の仕方を色々考える。</li>
+<li>練習の結果の記録の仕方を再度考え直す。</li>
+<li>正解不正解の推移のグラフを表示出来るようにする。</li>
+ <ul>
+ <li>それぞれの単語について</li>
+ <li>単語帳の中の全体について</li>
+ <li>グラフの横軸は、推移平均をとるか、週または月で取るか。を考える。</li>
+ </ul>
+<li>出題する物の選択の方法について考える(正解率の少ない物から or 出題数の少ない物から)</li>
+ <ul>
+ <li>練習する人が選択・設定する事が出来るようにする。</li>
+ <li>検索の機能を併用して、特定の条件に当て嵌まる物を出題する。</li>
+ </ul>
+</ul></p>
+<hr/>
+<h3><c:g>▼</c:g>実装</h3>
+
+<p><u>□データ構造の概要</u>
+<pre>
+//一つの英単語の構造
+
+EngWord
+├wordCore
+├mean*
+│├sentence*
+│├conj*
+││└wordCore
+│└rela*
+│  └wordCore
+└rela*
+  └wordCore
+
+// * 印は ○○.List で管理
+</pre>
+<ol>
+<li>EngWord</li>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>int (mbInt32)</td><td>identifier</td></tr>
+<tr><td>wordCore</td><td>core</td></tr>
+<tr><td>mean.List</td><td>meaning</td></tr>
+<tr><td>rela.List</td><td>rela</td></tr>
+<tr><td>string (mbString)</td><td>spellScore</td></tr>
+<tr><td>string (mbString)</td><td>meanScore</td></tr>
+</table>
+<li>mean</li> <c:g>//「意味」</c:g>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>string (mbString)</td><td>content</td></tr>
+<tr><td>mean.Type (mbInt32)</td><td>type</td></tr>
+<tr><td>mean.Attr (mbInt32)</td><td>attribute</td></tr>
+<tr><td>mean.Usage (mbInt32)</td><td>usage</td></tr>
+<tr><td>sentence.List</td><td>sentence</td></tr>
+<tr><td>conj.List</td><td>conjugation</td></tr>
+<tr><td>rela.List</td><td>relative</td></tr>
+<tr><td>EngWord (---)</td><td>Parent</td></tr>
+</table>
+意味を保持するオブジェクトである。品詞、属性、用法の値を持つ。他に、関連する語、活用、例文・解説のオブジェクトを保持する。<br/>
+品詞・属性・用法などの情報は検索の時に用いる。関連する語、活用、例文・解説も検索の対象として考えても良い。
+
+<ul>
+<li>品詞について</li>
+<br/>熟語は、通常の辞典では Idiom という独立した品詞の様にして扱う事がある。然し、熟語にも(それぞれに、中心の単語または文中での働きによって決まる)品詞が存在する。故に、このプログラムでは「熟語」は属性の一つとして提供する事とする。
+ <ul>
+ <li>熟語であるか否かは容易に判定できる為、自動判別による。</li>
+ </ul>
+<br/>品詞として、接頭辞・接尾辞を導入する事も考える。
+<li>活用について</li>
+<br/>簡単に活用を推測できる物はわざわざ登録せずに、自動的に生成する。
+ <ul>
+ <li>属性によって生成の仕方を変更する。例えば、不可算名詞は複数形を持たない。</li>
+ <li>綴りから活用を推定するほか、発音をも考慮する。(特にアクセントの位置による子音字の重複)</li>
+ </ul>
+不規則の様な変化の中にも、規則性がある物もある。そう言った物に関しては、
+<li>属性について</li>
+<br/>熟語属性は自動的に登録する事にする。
+<br/>他、不規則変化の動詞・形容詞については、活用に登録がある時に、不規則変化属性を保持する物とする。
+<li>関連する語について</li>
+<br/>活用と同様にして自動的に推定できる物は自動的に登録する。
+ <ul>
+ <li>派生を自動的に推定する。但し、特にユーザが派生の仕方などを指定した時のみに限る。派生の仕方とは、ラテン系,ギリシャ系 など色々考える事ができる。</li>
+ <li>典型の派生語も、[登録]ボタンで登録できる様にする。典型の派生語とは、ment,sion,an,etc. の事である。</li>
+ <li>同義語、反意語を自動的に検出する。具体的には、(1)既に相手の単語がこちらを登録している事を検出する、(2)意味の中に同じ単語が含まれる、などの方法をとる。
+ (1)に関しては無条件に登録しても良い。(2)に関しては本当にその単語を登録するか否か確認を取る様にする。また、(2)に関しては更に、相手側にも自分を登録するか確認する。
+ こういった物の検索は、[実行する]ボタンを用意し押された時に実行するだけでよい。初回の登録の際には自動的に起動しても良い。</li>
+ </ul>
+</ul>
+
+<li>mean.List</li>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>--- (mbFourcc)</td><td>'mn_L'</td></tr>
+<tr><td>--- (mbInt32)</td><td>要素の数</td></tr>
+<tr><td>System.Collections.ArrayList (mean[])</td><td>data</td></tr>
+</table>
+<li>wordCore</li> <c:g>//「見出し」(綴りと発音)</c:g>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>string (mbString)</td><td>word</td></tr>
+<tr><td>string (mbString)</td><td>pronunciation</td></tr>
+</table>
+<li>sentence</li> <c:g>//「例文・解説」</c:g>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>string (mbString)</td><td>content</td></tr>
+<tr><td>sentence.Type (mbInt32)</td><td>type</td></tr>
+</table>
+<li>sentence.List</li>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>--- (mbFourcc)</td><td>'sntL'</td></tr>
+<tr><td>--- (mbInt32)</td><td>要素の数</td></tr>
+<tr><td>System.Collections.ArrayList (sentence[])</td><td>data</td></tr>
+</table>
+<li>conj</li> <c:g>//「活用」</c:g>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>conj.Type (mbInt32)</td><td>type</td></tr>
+<tr><td>wordCore</td><td>wc</td></tr>
+<tr><td>string (mbString)</td><td>comment</td></tr>
+</table>
+<li>conj.List</li>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>--- (mbFourcc)</td><td>'cnjL'</td></tr>
+<tr><td>--- (mbInt32)</td><td>要素の数</td></tr>
+<tr><td>System.Collections.ArrayList (conj[])</td><td>data</td></tr>
+</table>
+<li>rela</li> <c:g>//「関連する語」</c:g>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>rela.Type (mbInt32)</td><td>type</td></tr>
+<tr><td>string (mbString)</td><td>comment</td></tr>
+<tr><td>bool (mbBool)</td><td>exist</td></tr>
+<tr><td>int (mbInt32)</td><td>identifier</td></tr>
+<tr><td>wordCore</td><td>core</td></tr>
+<tr><td>string (mbString)</td><td>mean</td></tr>
+</table>
+<li>rela.List</li>
+<table class="table1">
+<tr><th>型 (保存時)</th><th>名前</th></tr>
+<tr><td>--- (mbFourcc)</td><td>'relL'</td></tr>
+<tr><td>--- (mbInt32)</td><td>要素の数</td></tr>
+<tr><td>System.Collections.ArrayList (rela[])</td><td>data</td></tr>
+</table>
+</ol>
+<ul>
+<li>mean conjugate sentence などの子要素は、編集用 tree に表示する為の treenode を準備する。
+<li>mean conjugate などの各編集対象は、編集が為された事を通知する Event を用意する。または、編集用 userControl が通知する。</li>
+</ul>
+
+
+</p>
+<p><u>□詳細 EngViewWord</u><br/>
+<ul>
+<li>各単語のデータは、HTML形式で表示。</li>
+<li>→「SimpleHandler サンプル」を見よ</li>
+<ul>
+<li>HttpServerChannel</li>
+<li>HttpServerUtility</li>
+</ul>
+<li>Tree View を以て単語を選択できるようにする。</li>
+<li>単語は章(自由な名前を付ける。)毎に管理する事が出来る。</li>
+<li>検索結果も、章と同じ所に保存する。</li>
+</ul>
+</p>
+
+<p><u>□詳細 WordList</u><br/>
+<ul>
+<li>内部に Chapter を構成し、Chapter の中には、「検索結果」「ごみ箱」も用意する。</li>
+ <ul>
+ <li>「検索結果」は実質上単語のデータを保持する訳ではないので、参照の集合として扱う事になる。</li>
+ </ul>
+<li>保持している単語のリストを持ち、ID 綴り から、単語(EngWord)への参照を提供する。</li>
+<li>保存に於ける形式は、mwgIff のディレクトリとする。Chapter をサブディレクトリとし、EngWord はファイルとする。</li>
+ <ul>
+ <li>読込の際には、一気に全単語を読込・解釈するのではなく、必要の生じた物から解釈する様にする。従って、既に解釈したか、或いは未だバイナリのままかで識別する様なフラッグを用意する。</li>
+ </ul>
+</ul>
+</p>
+<p>
+
+<u>□詳細 ColumnPage</u>
+<ul>
+<li>初心者でも一から学ぶ事ができる形式のページを保持する。</li>
+<li>コラムページを作る。
+ <ul>
+ <li>興味深いと思われる事柄の紹介</li>
+ <li>似た単語同士(綴りの点で、構成の点で、語源の点で似ている)の比較</li>
+ <li>同義語を一括して掲載したページ</li>
+ </ul>
+</li>
+</ul>
+</p>
+
+<p><u>□詳細 EngWord</u>
+<ul>
+<li>検索のために、この Word に含まれる単語のリストを渡す</li>
+ <ul>
+ <li>渡す際には、重要度をつける。</li>
+ <li>関連語は、必ず参照対象の方が検索に引っかかるはずなのでリストには含めない。</li>
+ </ul>
+<li>日本語のリストを返す。</li>
+ <ul>
+ <li>同じ意味の語を自動的に抽出する為に、意味の文字列を分析して、出てくる単語をリストにして返す。</li>
+ </ul>
+ <ol>
+ <li>、。,.・などの記号で分割する。</li>
+ <li>使用している漢字に着目。連続する漢字で一単位とする。</li>
+ <li>連続するカタカナ(二文字以上)を抽出。</li>
+ </ol>
+<li>関連語の検索の為にリストを返す。</li>
+ <ul>
+ <li>関連語の逆参照検索に使用する。</li>
+ </ul>
+<li>参照の一意性の為に単語 ID をつける。</li>
+<hr size="1"/>
+<li><s>(Stream から作成) Binary から作成</s>(了)</li>
+<li><s>(Stream に書き込み) Binary に変換</s>(了)</li>
+<li>正解率の集計を行う。正解率の初期化。<br/>問題の解答の成績は別の場所にまとめて保存する。(ID 及び 単語の綴りが必要)</li>
+<hr size="1"/>
+<li>その単語のレポートを、HTML 形式で生成</li>
+<li>単語の重要度を学習レベルで表示</li>
+</ul>
+</p>
+
+</div>
+<div id="page2" style="display:none">
+<h2>古文 ― いにしへのことのは？</h2>
+
+<h3><c:g>▼</c:g>機能</h3>
+古文の単語を整理し、練習する事が出来るようにするのが目的である。
+<p><u>□単語の整理</u></p>
+　単語帳の形で行う。
+<p><u>□各単語のデータの扱い方について</u></p>
+<b>＊</b>共通
+<ul>
+<li>漢字での表記、歴史的仮名遣いでの表記、現代語での発音</li>
+<li>よく使われる時代</li>
+<li>その単語が、敬語表現であるか否か、敬語表現であるとすればその種類(丁寧、謙譲、尊敬)と程度(天皇、后、目上、…)</li>
+<li>品詞</li>
+<ul>
+<li>名詞(固有名詞、助数詞、人名、地名、作品名)、代名詞、形容詞、形容動詞、動詞</li>
+<li>助詞、助動詞、副詞、(連体詞)</li>
+<li>単漢字</li>
+<li>和歌(長歌、短歌、俳句)</li>
+<li>枕詞</li>
+</ul>
+</ul>
+<b>＊</b>動詞
+    活用の種類(行及び、段)、他動詞か自動詞か
+    語幹(一文字の動詞(得、経、来)などについては特別の処理を考える)
+    補助動詞であるか否か。
+<b>＊</b>名詞
+<b>＊</b>和歌
+    関連: 返歌、季語、掛詞、枕詞、縁語
+<p><u>□よくある縁語のリスト</u></p>
+  単語データ(和歌)の中にある縁語を抽出したり、逆に、和歌の文章を分析して縁語を指摘するなど。
+<p><u>□練習</u></p>
+  意味を与えて、それに対応する答えを指摘させる
+    指摘の方法として、選択を行わせる : 覚えた気になって、実は覚えてないという事に繋がるかも知れない。
+    指摘の方法として、入力を行わせる : 同義語を入力してしまう可能性がある。
+  単語を与えて、それに対応する意味を指摘させる
+    与える単語は、純粋な単語(和歌などを除く)の場合と、和歌も含む場合とどちらか選べるようにするとよい。
+    →出してよい品詞を選択出来るようにする。(初めから品詞別に単語帳を作るという手もあるが)
+  文章を読ませる→一定時間の後に現代語訳を表示する
+    (問題)自分で入力した文章だと、読むまでもなく内容を知っているので意味がないかも知れない。
+    →反復して一つの文章を読む事も上達の要ではあるまいか？
+</div>
+<div id="page3" style="display:none;">
+<h2>中国語 ― <span style="font-family:NSimSun">汉语</span></h2>
+
+<h3><c:g>▼</c:g>機能</h3>
+中国語の漢字や熟語を保持し練習する事が出来るようにするのが目的
+</div>
+<div id="page4" style="display:none;">
+<u>□test code of 参照型 and 値型</u>
+<p>普通の関数の引数として渡す時には、構造体(struct) の場合には値型で渡され、クラス(class)の場合には参照型で渡される。</p>
+<pre style="border:1 solid gray;padding:2;">
+<c:b>public class</c:b> Form1:System.Windows.Forms.Form{
+
+    <c:gry>....</c:gry>
+    
+    <c:b>private void</c:b> Form1_Load(<c:b>object</c:b> sender, System.EventArgs e){
+        test1 Test1=<c:b>new</c:b> test1();
+        <c:b>this</c:b>.t_test1(Test1);
+        System.Console.WriteLine(Test1.testStr);
+        test2 Test2=<c:b>new</c:b> test2("");
+        <c:b>this</c:b>.t_test2(Test2);
+        System.Console.WriteLine(Test2.testStr);
+    }
+    <c:b>public void</c:b> t_test1(test1 a){a.testStr="This is test1 and changed by the function.";}
+    <c:b>public void</c:b> t_test2(test2 a){a.testStr="This is test2 and changed by the function.";}
+}
+<c:b>public class</c:b> test1{
+    <c:b>public string</c:b> testStr;
+    <c:b>public</c:b> test1(){<c:b>this</c:b>.testStr="This is test1.";}
+}
+<c:b>public struct</c:b> test2{
+    <c:b>public string</c:b> testStr;
+    <c:b>public</c:b> test2(<c:b>string</c:b> a){<c:b>this</c:b>.testStr="This is test2."+a;}
+}
+</pre>
+</div>
+
+<div id="page5">
+<h3><c:g>▼</c:g>その他の単語帳の計画</h3>
+<ol>
+<li>漢文単語</li>
+<li>擬態語、擬音語</li>
+<li>助数詞(日本)、量詞(中国語)</li>
+<li>アルファベット略語の辞典(既に大規模な物が Internet 上にあると思われる。)</li>
+<li>問題と解答(数学、理科など)→説明本位</li>
+<li>物質名と化学式→説明本位</li>
+</ol>
+</div>
+</body>
+</html>

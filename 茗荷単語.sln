@@ -1,0 +1,34 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "英単語の練習", "英単語の練習\英単語の練習.csproj", "{FF66CBD5-DCCE-48A5-AD4F-1E388B68FDF9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mwgWords", "mwgWords\mwgWords.csproj", "{D077ACF4-9F03-4446-96FB-02DE7148B5A3}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FF66CBD5-DCCE-48A5-AD4F-1E388B68FDF9}.Debug.ActiveCfg = Debug|.NET
+		{FF66CBD5-DCCE-48A5-AD4F-1E388B68FDF9}.Debug.Build.0 = Debug|.NET
+		{FF66CBD5-DCCE-48A5-AD4F-1E388B68FDF9}.Release.ActiveCfg = Release|.NET
+		{FF66CBD5-DCCE-48A5-AD4F-1E388B68FDF9}.Release.Build.0 = Release|.NET
+		{D077ACF4-9F03-4446-96FB-02DE7148B5A3}.Debug.ActiveCfg = Debug|.NET
+		{D077ACF4-9F03-4446-96FB-02DE7148B5A3}.Debug.Build.0 = Debug|.NET
+		{D077ACF4-9F03-4446-96FB-02DE7148B5A3}.Release.ActiveCfg = Release|.NET
+		{D077ACF4-9F03-4446-96FB-02DE7148B5A3}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		TextFile1.txt = TextFile1.txt
+		茗荷単語.htm = 茗荷単語.htm
+		茗荷単語計画.txt = 茗荷単語計画.txt
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
